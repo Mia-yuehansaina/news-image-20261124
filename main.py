@@ -1,21 +1,30 @@
-"""Sum up 24 November 2026 world news in one image.
+#!/usr/bin/env python3
+"""Write the competition entry image to /output/entry.png.
 
-Deterministic: copies the bundled entry.png to /output/entry.png.
-No network, no randomness, no model calls.
+The entry image is bundled in this repository as entry.png. This program
+simply copies it byte-for-byte to the output directory, so the result is
+identical on every run. It uses only the Python standard library, needs
+no network access, and never depends on the clock or on randomness.
 """
+
 import os
 import shutil
 import sys
 
 
-def main():
-    src = os.path.join(os.path.dirname(os.path.abspath(__file__)), "entry.png")
+def main() -> int:
+    here = os.path.dirname(os.path.abspath(__file__))
+    source = os.path.join(here, "entry.png")
+    if not os.path.isfile(source):
+        print(f"error: bundled image not found: {source}", file=sys.stderr)
+        return 1
     out_dir = "/output"
+    target = os.path.join(out_dir, "entry.png")
     os.makedirs(out_dir, exist_ok=True)
-    dst = os.path.join(out_dir, "entry.png")
-    shutil.copyfile(src, dst)
-    print(f"Wrote {dst} ({os.path.getsize(dst)} bytes)")
+    shutil.copyfile(source, target)
+    print(f"Wrote {target} ({os.path.getsize(target)} bytes)")
+    return 0
 
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())
